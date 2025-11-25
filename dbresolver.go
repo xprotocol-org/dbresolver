@@ -164,6 +164,16 @@ func (dr *DBResolver) resolve(stmt *gorm.Statement, op Operation) gorm.ConnPool 
 	return stmt.ConnPool
 }
 
+func (dr *DBResolver) CloseStmtStore() {
+	if dr == nil {
+		return
+	}
+
+	for _, v := range dr.prepareStmtStore {
+		v.Close()
+	}
+}
+
 func (dr *DBResolver) getResolver(stmt *gorm.Statement) *resolver {
 	if len(dr.resolvers) > 0 {
 		if u, ok := stmt.Clauses[usingName].Expression.(using); ok && u.Use != "" {
